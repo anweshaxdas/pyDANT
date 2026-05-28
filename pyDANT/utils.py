@@ -89,7 +89,7 @@ def spikeLocation(waveforms_mean, channel_locations, n_nearest_channels=20, algo
 
     loc_center_to_mass = np.sum(loc_this * ptt_this[:, np.newaxis], axis=0) / np.sum(ptt_this)
 
-    if algorithm.lower() == 'center_of_mass' or ptt_max <= 0:
+    if algorithm.lower() == 'center_of_mass' or not (ptt_max > 0):
         x = loc_center_to_mass[0]
         y = loc_center_to_mass[1]
         z = 0
@@ -108,9 +108,11 @@ def spikeLocation(waveforms_mean, channel_locations, n_nearest_channels=20, algo
         [x0[0] + 100, x0[1] + 100, 100 * 10, 1000*ptt_max],
     )
 
-    output = least_squares(fun, x0=x0, bounds=bounds, args=(ptt_this, loc_this))
-    
-    return tuple(output["x"])
+    try:
+        output = least_squares(fun, x0=x0, bounds=bounds, args=(ptt_this, loc_this))
+        return tuple(output["x"])
+    except (ValueError, Exception):
+        return float(loc_center_to_mass[0]), float(loc_center_to_mass[1]), 0.0, float(ptt_max)
 
 def waveformEstimation(waveform_mean, location, channel_locations, location_new):
     '''Waveform estimation with Kriging interpolation.
