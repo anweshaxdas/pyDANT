@@ -89,7 +89,7 @@ def spikeLocation(waveforms_mean, channel_locations, n_nearest_channels=20, algo
 
     loc_center_to_mass = np.sum(loc_this * ptt_this[:, np.newaxis], axis=0) / np.sum(ptt_this)
 
-    if algorithm.lower() == 'center_of_mass':
+    if algorithm.lower() == 'center_of_mass' or ptt_max <= 0:
         x = loc_center_to_mass[0]
         y = loc_center_to_mass[1]
         z = 0
