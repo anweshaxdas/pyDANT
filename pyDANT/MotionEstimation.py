@@ -63,7 +63,7 @@ def computeMotion(user_settings):
     session_pairs = np.column_stack((
         [sessions[idx] for idx in idx_unit_pairs[idx_good,0]],
         [sessions[idx] for idx in idx_unit_pairs[idx_good,1]]
-    ))
+    )).astype(int).reshape(-1, 2)
 
     # Get all the good pairs and their distance
     depth = np.zeros(len(idx_good))
